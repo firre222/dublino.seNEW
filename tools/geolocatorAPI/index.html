@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Geolocation Viewer | Dublino</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    p {
+      margin-top: 0;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .output {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #333;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .description {
+      margin-top: 30px;
+      font-size: 0.85rem;
+      color: #666;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #444;
+      text-align: center;
+    }
+
+    footer a {
+      color: #007bff;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Find Your Location</h2>
+    <p>Click the button below to see your latitude and longitude.</p>
+    <button onclick="getLocation()">Get Location</button>
+    <div class="output" id="output"></div>
+  </div>
+
+  <p class="description">
+    This tool shows approximately where you or your device is located using your browser’s geolocation API. Location accuracy may vary.
+  </p>
+
+  <footer>
+    Contact us: 
+    <a href="https://dublino.se" target="_blank" rel="noopener noreferrer">dublino.se</a> | 
+    <a href="mailto:info@dublino.se">info@dublino.se</a>
+  </footer>
+
+  <script>
+    function getLocation() {
+      const output = document.getElementById('output');
+
+      if (!navigator.geolocation) {
+        output.textContent = "Geolocation is not supported by your browser.";
+        return;
+      }
+
+      output.textContent = "Locating…";
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude.toFixed(6);
+          const lon = position.coords.longitude.toFixed(6);
+
+          output.innerHTML = `
+            <strong>Latitude:</strong> ${lat}<br>
+            <strong>Longitude:</strong> ${lon}<br>
+            <a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank" rel="noopener noreferrer">📍 View on Google Maps</a>
+          `;
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              output.textContent = "Permission denied. You need to allow location access.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              output.textContent = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              output.textContent = "Location request timed out.";
+              break;
+            default:
+              output.textContent = "An unknown error occurred.";
+          }
+        }
+      );
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IP Info Lookup | Dublino</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fa;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .description {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 8px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 5px;
+      border: none;
+      background: #007BFF;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 15px;
+      text-align: left;
+      font-size: 14px;
+      color: #333;
+    }
+    .result p {
+      margin: 4px 0;
+    }
+
+    /* Contact Us styles */
+    .contact-us {
+      width: 350px;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #ddd;
+      padding-top: 15px;
+    }
+    .contact-us a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+    .contact-us a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>IP Info Lookup</h2>
+    <p class="description">
+      Enter an IP address to get detailed information including location, ISP, and coordinates.
+      Leave empty to lookup your current IP.
+    </p>
+    <input type="text" id="ipInput" placeholder="Enter IP (or leave empty)" />
+    <button onclick="getIPInfo()">Lookup</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="contact-us">
+    <p>Questions or feedback? Contact us at <a href="mailto:support@dublino.com">support@dublino.com</a>.</p>
+  </div>
+
+  <script>
+    async function getIPInfo() {
+      let ip = document.getElementById("ipInput").value.trim();
+      let url = ip ? `https://ipwho.is/${ip}` : `https://ipwho.is/`;
+
+      try {
+        let response = await fetch(url);
+        let data = await response.json();
+
+        if (!data.success) {
+          document.getElementById("result").innerHTML = `<p style="color:red;">❌ Invalid IP address</p>`;
+          return;
+        }
+
+        document.getElementById("result").innerHTML = `
+          <p><b>IP:</b> ${data.ip}</p>
+          <p><b>Country:</b> ${data.country} (${data.country_code})</p>
+          <p><b>Region:</b> ${data.region}</p>
+          <p><b>City:</b> ${data.city}</p>
+          <p><b>ISP:</b> ${data.connection?.isp || "N/A"}</p>
+          <p><b>Latitude:</b> ${data.latitude}</p>
+          <p><b>Longitude:</b> ${data.longitude}</p>
+        `;
+      } catch (error) {
+        document.getElementById("result").innerHTML = `<p style="color:red;">⚠️ Error fetching data</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
